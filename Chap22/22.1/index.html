@@ -5923,12 +5923,12 @@
 </blockquote>
 <ul>
 <li>
-<p>The time to compute the $\text{out-degree}$ of every vertext is</p>
+<p>The time to compute the $\text{out-degree}$ of every vertex is</p>
 <p>$$\sum_{v \in V}O(\text{out-degree}(v)) = O(|E| + |V|),$$</p>
 <p>which is straightforward.</p>
 </li>
 <li>
-<p>As for the $\text{in-degree}$, we have to scan through all adjacency lists and keep counters for how many times each vertex has been pointed to. Thus, the time complexity is also $O(|E| + |V|)$ becasue we'll visit all nodes and edges.</p>
+<p>As for the $\text{in-degree}$, we have to scan through all adjacency lists and keep counters for how many times each vertex has been pointed to. Thus, the time complexity is also $O(|E| + |V|)$ because we'll visit all nodes and edges.</p>
 </li>
 </ul>
 <h2 id="221-2">22.1-2</h2>
@@ -5994,20 +5994,21 @@ $$</p>
 <blockquote>
 <p>Given an adjacency-list representation of a multigraph $G = (V, E)$, describe an $O(V + E)$-time algorithm to compute the adjacency-list representation of the "equivalent" undirected graph $G' = (V, E')$, where $E'$ consists of the edges in $E$ with all multiple edges between two vertices replaced by a single edge and with all self-loops removed.</p>
 </blockquote>
-<p>Create a new adjacency-list $Adj'$ of size $|V|$ and an empty matrix $M$ of size $|V|^2$ first.
+<p>Create a new adjacency-list $Adj'$ of size $|V|$ and a zero-initialized array $A$ of size $|V|$ first.
 For each vertex $u$ in the multigraph $G$, we iterably examine each vertex $v$ of $Adj[u]$.</p>
 <ul>
-<li>If $M(u, v) == \emptyset$, mark $M(u, v)$ as $\text{true}$, then add $v$ to $Adj'[u]$.</li>
-<li>If $M(u, v) == true$, do nothing.</li>
+<li>If $v \ne u$ and $A[v] \ne u$, set $A[v]$ to $u$, then add $v$ to $Adj'[u]$.</li>
+<li>Else, do nothing.</li>
 </ul>
-<p>Since we lookup in the adjacency-list $Adj$ for $|V| + |E|$ times, the time complexity is $O(|V| + |E|)$.</p>
+<p>Note that $A$ does not contain any element with value $u$ before each iteration of the inner for-loop. That's why we use $A[v] = u$ to mark the existence of an edge $(u, v)$ in the inner for-loop.
+Since we lookup in the adjacency-list $Adj$ for $|V| + |E|$ times, the time complexity is $O(|V| + |E|)$.</p>
 <div class="highlight"><pre><span></span><code><span class="lineno" data-linenos="1 "></span><span class="n">EQUIVALENT</span><span class="o">-</span><span class="n">UNDIRECTED</span><span class="o">-</span><span class="n">GRAPH</span>
 <span class="lineno" data-linenos="2 "></span>    <span class="n">let</span> <span class="n">Adj</span><span class="err">&#39;</span><span class="p">[</span><span class="mf">1.</span><span class="p">.</span><span class="o">|</span><span class="n">V</span><span class="o">|</span><span class="p">]</span> <span class="n">be</span> <span class="n">a</span> <span class="k">new</span> <span class="n">adjacency</span> <span class="n">list</span>
-<span class="lineno" data-linenos="3 "></span>    <span class="n">let</span> <span class="n">M</span> <span class="n">be</span> <span class="o">|</span><span class="n">V</span><span class="o">|</span> <span class="err">×</span> <span class="o">|</span><span class="n">V</span><span class="o">|</span>
+<span class="lineno" data-linenos="3 "></span>    <span class="n">let</span> <span class="n">A</span> <span class="n">be</span> <span class="n">a</span> <span class="mi">0</span><span class="o">-</span><span class="n">initialized</span> <span class="n">array</span> <span class="n">of</span> <span class="n">size</span> <span class="o">|</span><span class="n">V</span><span class="o">|</span>
 <span class="lineno" data-linenos="4 "></span>    <span class="k">for</span> <span class="n">each</span> <span class="n">vertex</span> <span class="n">u</span> <span class="err">∈</span> <span class="n">G</span><span class="p">.</span><span class="n">V</span>
 <span class="lineno" data-linenos="5 "></span>        <span class="k">for</span> <span class="n">each</span> <span class="n">v</span> <span class="err">∈</span> <span class="n">Adj</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
-<span class="lineno" data-linenos="6 "></span>            <span class="k">if</span> <span class="n">M</span><span class="p">[</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="err">Ø</span> <span class="o">&amp;&amp;</span> <span class="n">u</span> <span class="o">!=</span> <span class="n">v</span>
-<span class="lineno" data-linenos="7 "></span>                <span class="n">M</span><span class="p">[</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="lineno" data-linenos="6 "></span>            <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">u</span> <span class="o">&amp;&amp;</span> <span class="n">A</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">!=</span> <span class="n">u</span>
+<span class="lineno" data-linenos="7 "></span>                <span class="n">A</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span>
 <span class="lineno" data-linenos="8 "></span>                <span class="n">INSERT</span><span class="p">(</span><span class="n">Adj</span><span class="err">&#39;</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">v</span><span class="p">)</span>
 </code></pre></div>
 

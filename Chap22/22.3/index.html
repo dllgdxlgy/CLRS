@@ -5999,22 +5999,24 @@
 </ul>
 <p>We judge the possibility according to this Theorem.</p>
 <ul>
-<li>
-<p>For <strong>directed graph</strong>, we can use the edge classification given by exercise 22.3-5 to simplify the problem.</p>
+<li>For <strong>directed graph</strong>, we can use the edge classification given by exercise 22.3-5 to simplify the problem.</li>
+</ul>
 <p>$$
-\begin{array}{c|ccc}
-from \diagdown to &amp; \text{WHITE}         &amp; \text{GRAY}                &amp; \text{BLACK} \\
-\hline
-\text{WHITE}      &amp; \text{All kinds}     &amp; \text{Cross, Back}         &amp; \text{Cross} \\
-\text{GRAY}       &amp; \text{Tree, Forward} &amp; \text{Tree, Forward, Back} &amp; \text{Tree, Forward, Cross} \\
-\text{BLACK}      &amp; -                    &amp; \text{Back}                &amp; \text{All kinds}
-\end{array}
-$$</p>
+  \begin{array}{c|ccc}
+  from \diagdown to &amp; \text{WHITE}         &amp; \text{GRAY}                &amp; \text{BLACK} \\
+  \hline
+  \text{WHITE}      &amp; \text{All kinds}     &amp; \text{Cross, Back}         &amp; \text{Cross} \\
+  \text{GRAY}       &amp; \text{Tree, Forward} &amp; \text{Tree, Forward, Back} &amp; \text{Tree, Forward, Cross} \\
+  \text{BLACK}      &amp; -                    &amp; \text{Back}                &amp; \text{All kinds}
+  \end{array}
+  $$</p>
+<ul>
+<li>
+<p>For <strong>undirected graph</strong>, starting from directed chart, we remove the forward edge and the cross edge, and</p>
 </li>
 <li>
-<p>For <strong>undirected graph</strong>, starting from directed chart, we remove the forward edge and the cross edge, and </p>
-<ul>
-<li>when a back edge exist, we add a tree edge;</li>
+<p>when a back edge exist, we add a tree edge;</p>
+</li>
 <li>when a tree edge exist, we add a back edge.</li>
 </ul>
 <p>This is correct for the following reasons:</p>
@@ -6023,16 +6025,14 @@ $$</p>
 <li>If $(u, v)$ is a tree edge from $u$'s perspective, $(u, v)$ is also a back edge from $v$'s perspective.</li>
 </ol>
 <p>$$
-\begin{array}{c|ccc}
-from \diagdown to &amp; \text{WHITE}      &amp; \text{GRAY}       &amp; \text{BLACK} \\
-\hline
-\text{WHITE}      &amp; -                 &amp; \text{Tree, Back} &amp; \text{Tree, Back} \\
-\text{GRAY}       &amp; \text{Tree, Back} &amp; \text{Tree, Back} &amp; \text{Tree, Back} \\
-\text{BLACK}      &amp; \text{Tree, Back} &amp; \text{Tree, Back} &amp; -
-\end{array}
-$$</p>
-</li>
-</ul>
+  \begin{array}{c|ccc}
+  from \diagdown to &amp; \text{WHITE}      &amp; \text{GRAY}       &amp; \text{BLACK} \\
+  \hline
+  \text{WHITE}      &amp; -                 &amp; \text{Tree, Back} &amp; \text{Tree, Back} \\
+  \text{GRAY}       &amp; \text{Tree, Back} &amp; \text{Tree, Back} &amp; \text{Tree, Back} \\
+  \text{BLACK}      &amp; \text{Tree, Back} &amp; \text{Tree, Back} &amp; -
+  \end{array}
+  $$</p>
 <h2 id="223-2">22.3-2</h2>
 <blockquote>
 <p>Show how depth-first search works on the graph of Figure 22.6. Assume that the <strong>for</strong> loop of lines 5–7 of the $\text{DFS}$ procedure considers the vertices in alphabetical order, and assume that each adjacency list is ordered alphabetically. Show the discovery and finishing times for each vertex, and show the classification of each edge.</p>
@@ -6091,35 +6091,46 @@ $$</p>
 <p>Rewrite the procedure $\text{DFS}$, using a stack to eliminate recursion.</p>
 </blockquote>
 <p>See the <a href="https://github.com/walkccc/CLRS-cpp/blob/master/Chap22/22.3-7/22.3-7.cpp">C++ demo</a>.</p>
-<div class="highlight"><pre><span></span><code><span class="lineno" data-linenos=" 1 "></span><span class="n">DFS</span><span class="o">-</span><span class="n">STACK</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-<span class="lineno" data-linenos=" 2 "></span>    <span class="k">for</span> <span class="n">each</span> <span class="n">vertex</span> <span class="n">u</span> <span class="err">∈</span> <span class="n">G</span><span class="p">.</span><span class="n">V</span>
-<span class="lineno" data-linenos=" 3 "></span>        <span class="n">u</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">WHITE</span>
-<span class="lineno" data-linenos=" 4 "></span>        <span class="n">u</span><span class="p">.</span><span class="err">π</span> <span class="o">=</span> <span class="n">NIL</span>
-<span class="lineno" data-linenos=" 5 "></span>    <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="lineno" data-linenos=" 6 "></span>    <span class="n">S</span> <span class="o">=</span> <span class="err">Ø</span>
-<span class="lineno" data-linenos=" 7 "></span>    <span class="k">for</span> <span class="n">each</span> <span class="n">vertex</span> <span class="n">u</span> <span class="err">∈</span> <span class="n">G</span><span class="p">.</span><span class="n">V</span>
-<span class="lineno" data-linenos=" 8 "></span>        <span class="k">if</span> <span class="n">u</span><span class="p">.</span><span class="n">color</span> <span class="o">==</span> <span class="n">WHITE</span>
-<span class="lineno" data-linenos=" 9 "></span>            <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="lineno" data-linenos="10 "></span>            <span class="n">u</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">time</span>
-<span class="lineno" data-linenos="11 "></span>            <span class="n">u</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">GRAY</span>
-<span class="lineno" data-linenos="12 "></span>            <span class="n">PUSH</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-<span class="lineno" data-linenos="13 "></span>            <span class="k">while</span> <span class="o">!</span><span class="n">STACK</span><span class="o">-</span><span class="n">EMPTY</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
-<span class="lineno" data-linenos="14 "></span>                <span class="n">v</span> <span class="o">=</span> <span class="n">TOP</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
-<span class="lineno" data-linenos="15 "></span>                <span class="n">isNeighborhoodsAllDiscovered</span> <span class="o">=</span> <span class="nb">true</span>
-<span class="lineno" data-linenos="16 "></span>                <span class="k">if</span> <span class="n">v</span><span class="p">.</span><span class="n">color</span> <span class="o">==</span> <span class="n">GRAY</span>
-<span class="lineno" data-linenos="17 "></span>                    <span class="k">for</span> <span class="n">each</span> <span class="n">vertex</span> <span class="n">w</span> <span class="err">∈</span> <span class="n">G</span><span class="p">.</span><span class="n">Adj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
-<span class="lineno" data-linenos="18 "></span>                        <span class="k">if</span> <span class="n">w</span><span class="p">.</span><span class="n">color</span> <span class="o">==</span> <span class="n">WHITE</span>
-<span class="lineno" data-linenos="19 "></span>                            <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="lineno" data-linenos="20 "></span>                            <span class="n">w</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">time</span>
-<span class="lineno" data-linenos="21 "></span>                            <span class="n">w</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">GRAY</span>
-<span class="lineno" data-linenos="22 "></span>                            <span class="n">PUSH</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-<span class="lineno" data-linenos="23 "></span>                            <span class="n">isNeighborhoodsAllDiscovered</span> <span class="o">=</span> <span class="nb">false</span>
-<span class="lineno" data-linenos="24 "></span>                            <span class="k">break</span>
-<span class="lineno" data-linenos="25 "></span>                <span class="k">if</span> <span class="n">isNeighborhoodsAllDiscovered</span>
-<span class="lineno" data-linenos="26 "></span>                    <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="lineno" data-linenos="27 "></span>                    <span class="n">v</span><span class="p">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">time</span>
-<span class="lineno" data-linenos="28 "></span>                    <span class="n">v</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">BLACK</span>
-<span class="lineno" data-linenos="29 "></span>                    <span class="n">POP</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<p>Also, see this <a href="https://github.com/walkccc/CLRS/issues/329">issue</a> for <a href="https://github.com/i-to">@i-to</a>'s discussion.</p>
+<div class="highlight"><pre><span></span><code><span class="lineno" data-linenos="1 "></span><span class="n">DFS</span><span class="o">-</span><span class="n">STACK</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="lineno" data-linenos="2 "></span>    <span class="k">for</span> <span class="n">each</span> <span class="n">vertex</span> <span class="n">u</span> <span class="err">∈</span> <span class="n">G</span><span class="p">.</span><span class="n">V</span>
+<span class="lineno" data-linenos="3 "></span>        <span class="n">u</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">WHITE</span>
+<span class="lineno" data-linenos="4 "></span>        <span class="n">u</span><span class="p">.</span><span class="err">π</span> <span class="o">=</span> <span class="n">NIL</span>
+<span class="lineno" data-linenos="5 "></span>    <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="lineno" data-linenos="6 "></span>    <span class="k">for</span> <span class="n">each</span> <span class="n">vertex</span> <span class="n">u</span> <span class="err">∈</span> <span class="n">G</span><span class="p">.</span><span class="n">V</span>
+<span class="lineno" data-linenos="7 "></span>        <span class="k">if</span> <span class="n">u</span><span class="p">.</span><span class="n">color</span> <span class="o">==</span> <span class="n">WHITE</span>
+<span class="lineno" data-linenos="8 "></span>            <span class="n">DFS</span><span class="o">-</span><span class="n">VISIT</span><span class="o">-</span><span class="n">STACK</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="lineno" data-linenos=" 1 "></span><span class="n">DFS</span><span class="o">-</span><span class="n">VISIT</span><span class="o">-</span><span class="n">STACK</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+<span class="lineno" data-linenos=" 2 "></span>    <span class="n">S</span> <span class="o">=</span> <span class="err">Ø</span>
+<span class="lineno" data-linenos=" 3 "></span>    <span class="n">PUSH</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+<span class="lineno" data-linenos=" 4 "></span>    <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mi">1</span>             <span class="c1">// white vertex u has just been discovered</span>
+<span class="lineno" data-linenos=" 5 "></span>    <span class="n">u</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">time</span>
+<span class="lineno" data-linenos=" 6 "></span>    <span class="n">u</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">GRAY</span>
+<span class="lineno" data-linenos=" 7 "></span>    <span class="k">while</span> <span class="o">!</span><span class="n">STACK</span><span class="o">-</span><span class="n">EMPTY</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<span class="lineno" data-linenos=" 8 "></span>        <span class="n">u</span> <span class="o">=</span> <span class="n">TOP</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<span class="lineno" data-linenos=" 9 "></span>        <span class="n">v</span> <span class="o">=</span> <span class="n">FIRST</span><span class="o">-</span><span class="n">WHITE</span><span class="o">-</span><span class="n">NEIGHBOR</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+<span class="lineno" data-linenos="10 "></span>        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">NIL</span>
+<span class="lineno" data-linenos="11 "></span>            <span class="c1">// u&#39;s adjacency list has been fully explored</span>
+<span class="lineno" data-linenos="12 "></span>            <span class="n">POP</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<span class="lineno" data-linenos="13 "></span>            <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="lineno" data-linenos="14 "></span>            <span class="n">u</span><span class="p">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">time</span>
+<span class="lineno" data-linenos="15 "></span>            <span class="n">u</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">BLACK</span>     <span class="c1">// blackend u; it is finished</span>
+<span class="lineno" data-linenos="16 "></span>        <span class="k">else</span>
+<span class="lineno" data-linenos="17 "></span>            <span class="c1">// u&#39;s adjacency list hasn&#39;t been fully explored</span>
+<span class="lineno" data-linenos="18 "></span>            <span class="n">v</span><span class="p">.</span><span class="err">π</span> <span class="o">=</span> <span class="n">u</span>
+<span class="lineno" data-linenos="19 "></span>            <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="lineno" data-linenos="20 "></span>            <span class="n">v</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">time</span>
+<span class="lineno" data-linenos="21 "></span>            <span class="n">v</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">GRAY</span>
+<span class="lineno" data-linenos="22 "></span>            <span class="n">PUSH</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="lineno" data-linenos="1 "></span><span class="n">FIRST</span><span class="o">-</span><span class="n">WHITE</span><span class="o">-</span><span class="n">NEIGHBOR</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+<span class="lineno" data-linenos="2 "></span>    <span class="k">for</span> <span class="n">each</span> <span class="n">vertex</span> <span class="n">v</span> <span class="err">∈</span> <span class="n">G</span><span class="p">.</span><span class="n">Adj</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+<span class="lineno" data-linenos="3 "></span>        <span class="k">if</span> <span class="n">v</span><span class="p">.</span><span class="n">color</span> <span class="o">==</span> <span class="n">WHITE</span>
+<span class="lineno" data-linenos="4 "></span>            <span class="k">return</span> <span class="n">v</span>
+<span class="lineno" data-linenos="5 "></span>    <span class="k">return</span> <span class="n">NIL</span>
 </code></pre></div>
 
 <h2 id="223-8">22.3-8</h2>
@@ -6151,7 +6162,7 @@ $$</p>
 <span class="lineno" data-linenos="11 "></span>            <span class="n">print</span> <span class="s">&quot;(u, v) is a back edge.&quot;</span>
 <span class="lineno" data-linenos="12 "></span>        <span class="k">else</span> <span class="k">if</span> <span class="n">v</span><span class="p">.</span><span class="n">d</span> <span class="o">&gt;</span> <span class="n">u</span><span class="p">.</span><span class="n">d</span>
 <span class="lineno" data-linenos="13 "></span>            <span class="n">print</span> <span class="s">&quot;(u, v) is a forward edge.&quot;</span>
-<span class="lineno" data-linenos="14 "></span>        <span class="k">else</span> 
+<span class="lineno" data-linenos="14 "></span>        <span class="k">else</span>
 <span class="lineno" data-linenos="15 "></span>            <span class="n">print</span> <span class="s">&quot;(u, v) is a cross edge.&quot;</span>
 <span class="lineno" data-linenos="16 "></span>    <span class="n">u</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">BLACK</span>
 <span class="lineno" data-linenos="17 "></span>    <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mi">1</span>
